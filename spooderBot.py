@@ -1,78 +1,64 @@
 import discord
+from discord.ext import commands
 import random
 import logging
 import asyncio
 import json
 from cleverbot import Cleverbot
 
-logging.basicConfig(level=logging.INFO)
-client = discord.Client()
-cb = Cleverbot()
-
 description = "Batman was right. Babies aren't fireproof. -Spidey"
 
-# Commands
-commands = {
-	'!ask':'Ask spidey a question',
-	'!boom':'Not implemented',
-	'!overwatchparty':'[Not implemented] Randomly select an overwatch party and heroes from at random',
-	'!votekick':'[Not implemented] Annoying discord member? Kick him to the tune of the mw2 nuke sequence',
-	'!help':"Ask for help"
-}
+# Cogs
+startup_extensions = [
+]
 
-@client.event
+bot = commands.Bot(command_prefix='!', description=description)
+logging.basicConfig(level=logging.INFO)
+cb = Cleverbot()
+
+@bot.event
 async def on_ready():
 	print('------')
-	print(client.user.name + " is now Online")
+	print(bot.user.name + " is now Online")
 	print('------')
-	servers = str(len(client.servers))
-	channels = str(len([c for c in client.get_all_channels()]))
+	servers = str(len(bot.servers))
+	channels = str(len([c for c in bot.get_all_channels()]))
 	print("Connected to:")
 	print(servers + " servers")
 	print(channels + " channels")
 	print('------')
 
-async def boom():
-	await client.wait_until_ready()
-	voiceChannel = None
-	for server in client.servers:
-		for channel in server.channels:
-			if channel.name == 'General':
-				voiceChannel = channel
-	voiceClip = await client.join_voice_channel(voiceChannel)
-	player = voiceClip.create_ffmpeg_player('boomheadshot.mp3')
-	player.start()
-
-async def cleverBot(question, channel):
-	if not question:
-		return await client.send_message(channel, "Please ask me a question")
-	await client.send_message(channel, cb.ask(question))
-
-async def help(channel, author):
-	response = description + "\n\n"
-	for i in commands:
-		response += i + " " + commands[i] + "\n\n"
-	return await client.send_message(channel, str(author.mention) + codeBlock(response))
-
-@client.event
+@bot.event
 async def on_message(message):
-	# send reply on dat boi
+	# don't want any infinite loops do we?
+	if message.author == bot.user:
+		return
+
+	# dat boi
 	if "dat boi" in message.content:
-		await client.send_message(message.channel, "oh shit wadd up", tts = True)
-	# help function
-	elif message.content.startswith("!help"):
-		await help(message.channel, message.author)
-	# prepare for cleverbot response
-	elif message.content.startswith("!ask"):
-		await cleverBot(" ".join(message.content.split()[1:]), message.channel)
+		return await bot.send_message(message.channel, "oh shit wadd up", tts = True)
+
+	await bot.process_commands(message)
+
+@bot.command(description='Ask spooder bot a question')
+async def ask(*question : str):
+	"""Ask the wise spooder a question"""
+	question = ' '.join(question)
+	if not question:
+		return await bot.say("Ask me a question")
+	return await bot.say(cb.ask(question))
 
 def load_credentials():
 	with open('credentials.json') as f:
 		return json.load(f)
 
-def codeBlock(s):
-	return "```" + s + "```"
-
 if __name__ == '__main__':
 	credentials = load_credentials()
-	client.run(credentials['token'])
+
+	for extension in startup_extensions:
+		try:
+			bot.load_extension(extension)
+		except Exception as e:
+			print('Failed to load extension {}\n{}: {}'.format(extension, type(e).__name__, e))
+
+	bot.run(credentials['token'])
