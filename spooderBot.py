@@ -1,20 +1,21 @@
 import discord
 from discord.ext import commands
+from cogs.utils import permissions
 import random
 import logging
 import asyncio
 import json
-from cleverbot import Cleverbot
 
 description = "Batman was right. Babies aren't fireproof. -Spidey"
 
-# Cogs
+# Bot extensions
 startup_extensions = [
+	"cogs.fun",
+	"cogs.rng"
 ]
 
 bot = commands.Bot(command_prefix='!', description=description)
 logging.basicConfig(level=logging.INFO)
-cb = Cleverbot()
 
 @bot.event
 async def on_ready():
@@ -35,18 +36,55 @@ async def on_message(message):
 		return
 
 	# dat boi
-	if "dat boi" in message.content:
+	if "dat" in message.content and "boi" in message.content:
 		return await bot.send_message(message.channel, "oh shit wadd up", tts = True)
 
 	await bot.process_commands(message)
 
-@bot.command(description='Ask spooder bot a question')
-async def ask(*question : str):
-	"""Ask the wise spooder a question"""
-	question = ' '.join(question)
-	if not question:
-		return await bot.say("Ask me a question")
-	return await bot.say(cb.ask(question))
+@bot.command(hidden=True)
+@permissions.isOwner()
+async def load(*, module : str):
+	"""Loads a module."""
+	module = module.strip()
+	try:
+		bot.load_extension(module)
+	except Exception as e:
+		await bot.say('\U0001f52b')
+		await bot.say('{}: {}'.format(type(e).__name__, e))
+	else:
+		await bot.say('\U0001f44c')
+
+@bot.command(hidden=True)
+@permissions.isOwner()
+async def unload(*, module : str):
+	"""Unloads a module."""
+	module = module.strip()
+	try:
+		bot.unload_extension(module)
+	except Exception as e:
+		await bot.say('\U0001f52b')
+		await bot.say('{}: {}'.format(type(e).__name__, e))
+	else:
+		await bot.say('\U0001f44c')
+
+@bot.command(pass_context=True, hidden=True)
+@permissions.isOwner()
+async def debug(ctx, *, code : str):
+	"""Evaluates code."""
+	code = code.strip('` ')
+	python = '```py\n{}\n```'
+	result = None
+
+	try:
+		result = eval(code)
+	except Exception as e:
+		await bot.say(python.format(type(e).__name__ + ': ' + str(e)))
+		return
+
+	if asyncio.iscoroutine(result):
+		result = await result
+
+	await bot.say(python.format(result))
 
 def load_credentials():
 	with open('credentials.json') as f:
