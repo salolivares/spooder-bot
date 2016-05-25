@@ -26,6 +26,7 @@ class VoiceState:
 		self.play_next_song = asyncio.Event()
 		self.songs = asyncio.Queue()
 		self.skip_votes = set() # a set of user_ids that voted
+		self.volume = 0.6
 		self.audio_player = self.bot.loop.create_task(self.audio_player_task())
 
 	def is_playing(self):
@@ -142,7 +143,7 @@ class Music:
 			fmt = 'An error occurred while processing this request: ```py\n{}: {}\n```'
 			await self.bot.send_message(ctx.message.channel, fmt.format(type(e).__name__, e))
 		else:
-			player.volume = 0.6
+			player.volume = state.volume
 			entry = VoiceEntry(ctx.message, player)
 			await self.bot.say('Enqueued ' + str(entry))
 			await state.songs.put(entry)
@@ -155,6 +156,7 @@ class Music:
 		if state.is_playing():
 			player = state.player
 			player.volume = value / 100
+			state.volume = player.volume
 			await self.bot.say('Set the volume to {:.0%}'.format(player.volume))
 
 	@commands.command(pass_context=True, no_pm=True)
