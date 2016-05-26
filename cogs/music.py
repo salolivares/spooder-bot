@@ -237,23 +237,21 @@ class Music:
 	async def boom(self, ctx):
 		''' OH YEA '''
 		state = self.get_voice_state(ctx.message.server)
+		alreadyInChannel = True
 
 		# check if bot is already in voice channel
 		if state.voice is None:
 			success = await ctx.invoke(self.summon)
+			alreadyInChannel = False
 			if not success:
 				return
-
-		# pause music if anything is playing
-		await ctx.invoke(self.pause)
 
 		# play boom
 		player = state.voice.create_ffmpeg_player("boomheadshot.mp3")
 		player.start()
 
-		# resume music if its playing
-		await ctx.invoke(self.resume)
-
+		if !alreadyInChannel:
+			await state.voice.disconnect()
 
 
 def setup(bot):
