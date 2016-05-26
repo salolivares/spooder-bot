@@ -232,5 +232,29 @@ class Music:
 		else:
 			skip_count = len(state.skip_votes)
 			await self.bot.say('Now playing {} [skips: {}/3]'.format(state.current, skip_count))
+
+	@commands.command(pass_context=True, no_pm=True)
+	async def boom(self, ctx):
+		''' OH YEA '''
+		state = self.get_voice_state(ctx.message.server)
+
+		# check if bot is already in voice channel
+		if state.voice is None:
+			success = await ctx.invoke(self.summon)
+			if not success:
+				return
+
+		# pause music if anything is playing
+		await ctx.invoke(self.pause)
+
+		# play boom
+		player = await state.voice.create_ffmpeg_player("boomheadshot.mp3")
+		player.start()
+
+		# resume music if its playing
+		await ctx.invoke(self.resume)
+
+
+
 def setup(bot):
 	bot.add_cog(Music(bot))
