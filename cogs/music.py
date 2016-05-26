@@ -1,5 +1,6 @@
 import asyncio
 import discord
+import time
 from discord.ext import commands
 
 if not discord.opus.is_loaded():
@@ -249,7 +250,8 @@ class Music:
 		# play boom
 		player = state.voice.create_ffmpeg_player("boomheadshot.mp3")
 		player.start()
-		asyncio.Event().wait()
+
+		time.sleep(5) # super hacky way of doing this
 
 		if not alreadyInChannel:
 			await state.voice.disconnect()
