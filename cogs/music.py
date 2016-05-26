@@ -248,7 +248,7 @@ class Music:
 		await ctx.invoke(self.pause)
 
 		# play boom
-		player = await state.voice.create_ffmpeg_player("boomheadshot.mp3")
+		player = state.voice.create_ffmpeg_player("boomheadshot.mp3")
 		player.start()
 
 		# resume music if its playing
