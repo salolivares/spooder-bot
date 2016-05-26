@@ -249,6 +249,7 @@ class Music:
 		# play boom
 		player = state.voice.create_ffmpeg_player("boomheadshot.mp3")
 		player.start()
+		asyncio.Event().wait()
 
 		if not alreadyInChannel:
 			await state.voice.disconnect()
