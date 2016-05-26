@@ -250,7 +250,7 @@ class Music:
 		player = state.voice.create_ffmpeg_player("boomheadshot.mp3")
 		player.start()
 
-		if !alreadyInChannel:
+		if not alreadyInChannel:
 			await state.voice.disconnect()
 
 
