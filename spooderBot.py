@@ -6,7 +6,7 @@ import logging
 import asyncio
 import json
 
-description = "Batman was right. Babies aren't fireproof. -Spidey"
+description = "Batman was right. Babies aren't fireproof. - Spidey"
 
 # Bot extensions
 startup_extensions = [
@@ -15,6 +15,8 @@ startup_extensions = [
 ]
 
 bot = commands.Bot(command_prefix='!', description=description)
+
+# Logging setup
 logging.basicConfig(level=logging.INFO)
 
 @bot.event
