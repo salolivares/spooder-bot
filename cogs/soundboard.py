@@ -46,7 +46,7 @@ class SoundBoard:
                 break
 
     @commands.command(pass_context=True, no_pm=True)
-    async def stop(self, ctx):
+    async def fstop(self, ctx):
         '''ITS TIME TO STOP'''
         try:
             voice = await self.bot.join_voice_channel(ctx.message.author.voice_channel)
