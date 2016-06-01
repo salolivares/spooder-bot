@@ -45,24 +45,6 @@ class SoundBoard:
             except:
                 break
 
-    @commands.command(pass_context=True, no_pm=True)
-    async def fstop(self, ctx):
-        '''ITS TIME TO STOP'''
-        try:
-            voice = await self.bot.join_voice_channel(ctx.message.author.voice_channel)
-            player = voice.create_ffmpeg_player("sounds/stop.mp3")
-            player.start()
-        except:
-            pass
-
-        while True:
-            try:
-                if player.is_done():
-                    await voice.disconnect()
-                    break
-            except:
-                break
-
 def setup(bot):
     bot.add_cog(SoundBoard(bot))
     print("Soundboard cog loaded.")
