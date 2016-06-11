@@ -31,6 +31,7 @@ class RNG():
 			"ヽ༼ຈل͜ຈ༽ﾉ"
 		])
 		await self.bot.say(lennyFace)
+		await self.bot.edit_message(ctx.message, lennyFace)
 
 def setup(bot):
 	bot.add_cog(RNG(bot))
