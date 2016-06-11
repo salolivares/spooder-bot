@@ -22,7 +22,7 @@ class RNG():
 		result = ', '.join(str(random.randint(1, limit)) for r in range(rolls))
 		await self.bot.say(result)
 
-	@commands.command()
+	@commands.command(description='A fine assortment of lenny faces', pass_context=True)
 	async def lenny(self):
 		"""Displays a random lenny face."""
 		lennyFace = random.choice([

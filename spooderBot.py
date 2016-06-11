@@ -11,7 +11,9 @@ description = "Batman was right. Babies aren't fireproof. - Spidey"
 # Bot extensions
 startup_extensions = [
 	"cogs.fun",
-	"cogs.rng"
+	"cogs.rng",
+	"cogs.music",
+	"cogs.soundboard"
 ]
 
 bot = commands.Bot(command_prefix='!', description=description)
