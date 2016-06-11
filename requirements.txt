@@ -1,7 +1,7 @@
 aiohttp==0.21.6
 cffi==1.6.0
 chardet==2.3.0
-cleverbot==1.0.1
+cleverbot==1.0.2
 discord.py==0.10.0a0
 future==0.15.2
 pycparser==2.14
