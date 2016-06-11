@@ -1,5 +1,7 @@
 # spooder-bot
 A stupid discord bot.
+Inline-style:
+![alt text](http://i.imgur.com/IvIH9vy.png)
 
 ## Requirements
 - Python 3.5+
