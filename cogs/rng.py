@@ -30,7 +30,7 @@ class RNG():
 			"( ͡o ͜ʖ ͡o)", "͡(° ͜ʖ ͡ -)", "( ͡͡ ° ͜ ʖ ͡ °)﻿", "(ง ͠° ͟ل͜ ͡°)ง",
 			"ヽ༼ຈل͜ຈ༽ﾉ"
 		])
-		await client.delete_message(ctx.message)
+		await self.bot.delete_message(ctx.message)
 		await self.bot.say(lennyFace)
 
 def setup(bot):
