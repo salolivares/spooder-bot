@@ -23,7 +23,7 @@ class RNG():
 		await self.bot.say(result)
 
 	@commands.command(description='A fine assortment of lenny faces', pass_context=True)
-	async def lenny(self):
+	async def lenny(self, ctx):
 		"""Displays a random lenny face."""
 		lennyFace = random.choice([
 			"( ͡° ͜ʖ ͡°)", "( ͠° ͟ʖ ͡°)", "ᕦ( ͡° ͜ʖ ͡°)ᕤ", "( ͡~ ͜ʖ ͡°)",
