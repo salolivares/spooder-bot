@@ -7,8 +7,8 @@ A stupid discord bot.
 - youtube-dl
 
 ## Setup
-1) Need to install the following dependencies above (use pip)
-2) Create a file a base directory called "credentials.json" with the following format:
+1. Need to install the following dependencies above (use pip)
+2. Create a file a base directory called "credentials.json" with the following format:
 ```json
 {
     "token": "YOUR TOKEN HERE"
