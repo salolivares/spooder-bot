@@ -1,5 +1,6 @@
 # spooder-bot
 A stupid discord bot.
+
 ![alt text](http://i.imgur.com/IvIH9vy.png)
 
 ## Requirements
