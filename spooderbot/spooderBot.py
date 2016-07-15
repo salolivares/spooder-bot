@@ -21,14 +21,15 @@ bot = commands.Bot(command_prefix='!', description=description)
 
 # Logging setup
 discordLogger = logging.getLogger('discord')
-discordLogger.setLevel(logging.CRITICAL)
+discordLogger.setLevel(logging.INFO)
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-
 handler = logging.FileHandler(filename='spooderbot.log', encoding='utf-8', mode='w')
-logger.addHandler(handler)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
 
+logger.addHandler(handler)
 
 @bot.event
 async def on_command_error(error, ctx):
@@ -66,7 +67,7 @@ async def on_command(command, ctx):
     else:
         destination = '#{0.channel.name} ({0.server.name})'.format(message)
 
-    logger.info('{0.timestamp}: {0.author.name} in {1}: {0.content}'.format(message, destination))
+    logger.info('{0.author.name} in {1}: {0.content}'.format(message, destination))
 
 
 @bot.event
@@ -94,11 +95,12 @@ def load_credentials():
 
 if __name__ == '__main__':
     credentials = load_credentials()
+    logger.info("Loaded Credentials")
 
     for extension in startup_extensions:
         try:
             bot.load_extension(extension)
         except Exception as e:
-            print('Failed to load extension {}\n{}: {}'.format(extension, type(e).__name__, e))
+            logger.error('Failed to load extension {}. {}: {}'.format(extension, type(e).__name__, e))
 
     bot.run(credentials['token'])
