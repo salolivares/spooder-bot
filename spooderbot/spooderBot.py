@@ -103,4 +103,5 @@ if __name__ == '__main__':
         except Exception as e:
             logger.error('Failed to load extension {}. {}: {}'.format(extension, type(e).__name__, e))
 
+    logger.info("spooderBot now running!")
     bot.run(credentials['token'])
