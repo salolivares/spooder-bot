@@ -1,23 +1,45 @@
+import datetime
+import traceback
+
+import sys
 from discord.ext import commands
-from cogs.utils import permissions
 import logging
-import asyncio
 import json
 
-description = "Batman was right. Babies aren't fireproof. - Spidey"
+description = "I am bot written by Sal. My purpose is to do dope sh*t."
 
 # Bot extensions
 startup_extensions = [
     "cogs.fun",
     "cogs.rng",
     "cogs.music",
-    "cogs.soundboard"
+    "cogs.soundboard",
+    "cogs.admin"
 ]
 
 bot = commands.Bot(command_prefix='!', description=description)
 
 # Logging setup
-logging.basicConfig(level=logging.INFO)
+discordLogger = logging.getLogger('discord')
+discordLogger.setLevel(logging.CRITICAL)
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+handler = logging.FileHandler(filename='spooderbot.log', encoding='utf-8', mode='w')
+logger.addHandler(handler)
+
+
+@bot.event
+async def on_command_error(error, ctx):
+    if isinstance(error, commands.NoPrivateMessage):
+        await bot.send_message(ctx.message.author, 'This command cannot be used in private messages.')
+    elif isinstance(error, commands.DisabledCommand):
+        await bot.send_message(ctx.message.author, 'Sorry. This command is disabled and cannot be used.')
+    elif isinstance(error, commands.CommandInvokeError):
+        print('In {0.command.qualified_name}:'.format(ctx), file=sys.stderr)
+        traceback.print_tb(error.original.__traceback__)
+        print('{0.__class__.__name__}: {0}'.format(error.original), file=sys.stderr)
 
 
 @bot.event
@@ -31,12 +53,26 @@ async def on_ready():
     print(servers + " servers")
     print(channels + " channels")
     print('------')
+    if not hasattr(bot, 'uptime'):
+        bot.uptime = datetime.datetime.utcnow()
+
+
+@bot.event
+async def on_command(command, ctx):
+    message = ctx.message
+    destination = None
+    if message.channel.is_private:
+        destination = 'Private Message'
+    else:
+        destination = '#{0.channel.name} ({0.server.name})'.format(message)
+
+    logger.info('{0.timestamp}: {0.author.name} in {1}: {0.content}'.format(message, destination))
 
 
 @bot.event
 async def on_message(message):
     # don't want any infinite loops do we?
-    if message.author == bot.user:
+    if message.author.bot:
         return
 
     # dat boi
@@ -46,52 +82,9 @@ async def on_message(message):
     await bot.process_commands(message)
 
 
-@bot.command(hidden=True)
-@permissions.isOwner()
-async def load(*, module: str):
-    """Loads a module."""
-    module = module.strip()
-    try:
-        bot.load_extension(module)
-    except Exception as e:
-        await bot.say('\U0001f52b')
-        await bot.say('{}: {}'.format(type(e).__name__, e))
-    else:
-        await bot.say('\U0001f44c')
-
-
-@bot.command(hidden=True)
-@permissions.isOwner()
-async def unload(*, module: str):
-    """Unloads a module."""
-    module = module.strip()
-    try:
-        bot.unload_extension(module)
-    except Exception as e:
-        await bot.say('\U0001f52b')
-        await bot.say('{}: {}'.format(type(e).__name__, e))
-    else:
-        await bot.say('\U0001f44c')
-
-
-@bot.command(pass_context=True, hidden=True)
-@permissions.isOwner()
-async def debug(ctx, *, code: str):
-    """Evaluates code."""
-    code = code.strip('` ')
-    python = '```py\n{}\n```'
-    result = None
-
-    try:
-        result = eval(code)
-    except Exception as e:
-        await bot.say(python.format(type(e).__name__ + ': ' + str(e)))
-        return
-
-    if asyncio.iscoroutine(result):
-        result = await result
-
-    await bot.say(python.format(result))
+@bot.event
+async def on_resumed():
+    print('Resumed...')
 
 
 def load_credentials():
