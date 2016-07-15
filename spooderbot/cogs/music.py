@@ -201,7 +201,7 @@ class Music:
 
         try:
             voice = await self.bot.join_voice_channel(ctx.message.author.voice_channel)
-            player = voice.create_ffmpeg_player("sounds/stop.mp3")
+            player = voice.create_ffmpeg_player("resources/sounds/stop.mp3")
             player.start()
         except:
             pass
