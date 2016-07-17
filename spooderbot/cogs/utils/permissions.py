@@ -2,8 +2,9 @@ from discord.ext import commands
 
 authorized_users = [
     "140350353521639424",  # Sal
-    "140208896726925312"   # Elijah
+    "140208896726925312"  # Elijah
 ]
+
 
 def checkIfOwner(message):
     """A helper function used by isOwner()."""
