@@ -13,7 +13,7 @@ startup_extensions = [
     "cogs.music",
     "cogs.soundboard",
     "cogs.admin",
-    "cogs.utilities"
+    "cogs.meta"
 ]
 
 bot = commands.Bot(command_prefix='!', description=description)

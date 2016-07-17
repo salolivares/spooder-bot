@@ -61,7 +61,7 @@ class Utilities:
 
         await self.bot.say('\n'.join(map(to_string, characters)))
 
-    @commands.command(pass_context=True, aliases=['reminder'])
+    @commands.command(pass_context=True, aliases=['reminder', 'remind'])
     async def timer(self, ctx, time: TimeParser, *, message=''):
         """Reminds you of something after a certain amount of time.
         The time can optionally be specified with units such as 'h'
@@ -73,14 +73,13 @@ class Utilities:
         author = ctx.message.author
         reminder = None
         completed = None
-        message = message.replace('@everyone', '@\u200beveryone')
 
         if not message:
-            reminder = 'Okay {0.mention}, I\'ll remind you in {1.seconds} seconds.'
-            completed = 'Time is up {0.mention}! You asked to be reminded about something.'
+            reminder = 'Alright {0.mention}, I\'ll remind everyone in {1.seconds} seconds.'
+            completed = 'Listen up @everyone, {0.name} asked everyone to be reminded about something.'
         else:
-            reminder = 'Okay {0.mention}, I\'ll remind you about "{2}" in {1.seconds} seconds.'
-            completed = 'Time is up {0.mention}! You asked to be reminded about "{1}".'
+            reminder = 'Alright {0.mention}, I\'ll remind everyone about "{2}" in {1.seconds} seconds.'
+            completed = 'Listen up @everyone, {0.name} asked you guys to be reminded about "{1}".'
 
         await self.bot.say(reminder.format(author, time, message))
         await asyncio.sleep(time.seconds)
