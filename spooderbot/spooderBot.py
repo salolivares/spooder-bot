@@ -4,6 +4,8 @@ from discord.ext import commands
 import logging
 import json
 
+from cogs.utils.database import Database
+
 description = "I am bot written by Sal. My purpose is to do dope sh*t."
 
 # Bot extensions
@@ -13,7 +15,8 @@ startup_extensions = [
     "cogs.music",
     "cogs.soundboard",
     "cogs.admin",
-    "cogs.meta"
+    "cogs.meta",
+    "cogs.mod"
 ]
 
 bot = commands.Bot(command_prefix='!', description=description)
@@ -22,13 +25,14 @@ bot = commands.Bot(command_prefix='!', description=description)
 discordLogger = logging.getLogger('discord')
 discordLogger.setLevel(logging.INFO)
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("spooderBot")
 logger.setLevel(logging.INFO)
 handler = logging.FileHandler(filename='spooderbot.log', encoding='utf-8', mode='w')
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 
 logger.addHandler(handler)
+
 
 @bot.event
 async def on_command_error(error, ctx):
@@ -89,14 +93,19 @@ def load_credentials():
 
 
 if __name__ == '__main__':
+    # Load credentials to log into discord
     credentials = load_credentials()
     logger.info("Loaded Credentials")
 
+    # Load database
+    bot.database = Database()
+
+    # Load extensions
     for extension in startup_extensions:
         try:
             bot.load_extension(extension)
         except Exception as e:
-            logger.error('Failed to load extension {}. {}: {}'.format(extension, type(e).__name__, e))
+            logger.warn('Failed to load extension {}. {}: {}'.format(extension, type(e).__name__, e))
 
     logger.info("spooderBot now running!")
     bot.run(credentials['token'])
