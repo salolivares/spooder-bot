@@ -81,11 +81,12 @@ async def on_resumed():
     print('Resumed...')
 
 async def get_oauth_url():
+    permissions = "&permissions=133692435"
     try:
         data = await bot.application_info()
     except AttributeError:
         return "Your discord.py is outdated. Couldn't retrieve invite link."
-    return discord.utils.oauth_url(data.id)
+    return discord.utils.oauth_url(data.id) + permissions
 
 
 def load_credentials():
