@@ -49,4 +49,3 @@ class SoundBoard:
 
 def setup(bot):
     bot.add_cog(SoundBoard(bot))
-    print("Soundboard cog loaded.")
