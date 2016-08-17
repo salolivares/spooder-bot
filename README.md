@@ -11,7 +11,8 @@ A stupid discord bot.
 2. Create a file a base directory called "credentials.json" with the following format:
 ```json
 {
-    "token": "YOUR TOKEN HERE"
+    "token": "YOUR TOKEN HERE",
+    "client_id": "CLIENT ID HERE"
 }
 ```
 
