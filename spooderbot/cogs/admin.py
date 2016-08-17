@@ -1,85 +1,38 @@
-# This is a straight adaption from this: https://github.com/Rapptz/RoboDanny/blob/master/cogs/admin.py
 from discord.ext import commands
-import inspect
-
-# to expose to the eval command
-import datetime
-from collections import Counter
 
 from cogs.utils import permissions
 
 
 class Admin:
-    """Admin-only commands that make the bot dynamic."""
-
     def __init__(self, bot):
         self.bot = bot
+        self.db = bot.database
 
-    @commands.command(hidden=True)
+    @commands.group(pass_context=True, no_pm=True)
     @permissions.isOwner()
-    async def load(self, *, module: str):
-        """Loads a module."""
-        try:
-            self.bot.load_extension(module)
-        except Exception as e:
-            await self.bot.say('\N{PISTOL}')
-            await self.bot.say('{}: {}'.format(type(e).__name__, e))
+    async def ignore(self, ctx):
+        """Handles ignore list. Anything on the ignore list is barred from using commands."""
+        if ctx.invoked_subcommand is None:
+            await self.bot.say('Invalid subcommand passed: {0.subcommand_passed}'.format(ctx))
+
+    @ignore.command(name='list', pass_context=True)
+    async def ignoreList(self, ctx):
+        """List which channels and users are being ignored."""
+        channels = self.db.getIgnoredChannels()
+        users = self.db.getIgnoredUsers()
+
+        message = "Ignored Channels\n------------------\n"
+
+        if channels:
+            message += ('\n'.join(channels))
         else:
-            await self.bot.say('\N{OK HAND SIGN}')
+            message += "None\n"
 
-    @commands.command(hidden=True)
-    @permissions.isOwner()
-    async def unload(self, *, module: str):
-        """Unloads a module."""
-        try:
-            self.bot.unload_extension(module)
-        except Exception as e:
-            await self.bot.say('\N{PISTOL}')
-            await self.bot.say('{}: {}'.format(type(e).__name__, e))
+        message += "Ignored Users\n--------------------"
+        if users:
+            message += '\n'.join(self.db.getIgnoredUsers())
         else:
-            await self.bot.say('\N{OK HAND SIGN}')
-
-    @commands.command(name='reload', hidden=True)
-    @permissions.isOwner()
-    async def _reload(self, *, module: str):
-        """Reloads a module."""
-        try:
-            self.bot.unload_extension(module)
-            self.bot.load_extension(module)
-        except Exception as e:
-            await self.bot.say('\N{PISTOL}')
-            await self.bot.say('{}: {}'.format(type(e).__name__, e))
-        else:
-            await self.bot.say('\N{OK HAND SIGN}')
-
-    @commands.command(pass_context=True, hidden=True)
-    @permissions.isOwner()
-    async def debug(self, ctx, *, code: str):
-        """Evaluates code."""
-        code = code.strip('` ')
-        python = '```py\n{}\n```'
-        result = None
-
-        env = {
-            'bot': self.bot,
-            'ctx': ctx,
-            'message': ctx.message,
-            'server': ctx.message.server,
-            'channel': ctx.message.channel,
-            'author': ctx.message.author
-        }
-
-        env.update(globals())
-
-        try:
-            result = eval(code, env)
-            if inspect.isawaitable(result):
-                result = await result
-        except Exception as e:
-            await self.bot.say(python.format(type(e).__name__ + ': ' + str(e)))
-            return
-
-        await self.bot.say(python.format(result))
+            message += "None\n"
 
 
 def setup(bot):

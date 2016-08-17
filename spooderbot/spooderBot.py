@@ -14,9 +14,9 @@ startup_extensions = [
     "cogs.rng",
     "cogs.music",
     "cogs.soundboard",
-    "cogs.admin",
+    "cogs.developer",
     "cogs.meta",
-    "cogs.mod"
+    "cogs.admin"
 ]
 
 bot = commands.Bot(command_prefix='!', description=description)
