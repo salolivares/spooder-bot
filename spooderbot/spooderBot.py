@@ -6,6 +6,7 @@ import logging
 import logging.handlers
 import json
 import sys
+import os
 
 description = "I am bot written by Sal. My purpose is to do dope sh*t."
 
@@ -21,6 +22,7 @@ startup_extensions = [
 ]
 
 bot = commands.Bot(command_prefix='!', description=description)
+
 
 @bot.event
 async def on_command_error(error, ctx):
@@ -77,6 +79,7 @@ async def on_message(message):
 async def on_resumed():
     print('Resumed...')
 
+
 async def get_oauth_url():
     permissions = "&permissions=133692435"
     try:
@@ -89,6 +92,14 @@ async def get_oauth_url():
 def load_credentials():
     with open('resources/credentials.json') as f:
         return json.load(f)
+
+
+def check_folders():
+    folders = ("data", "data/spooderbot")
+    for folder in folders:
+        if not os.path.exists(folder):
+            print("Creating " + folder + " folder...")
+            os.makedirs(folder)
 
 
 def setup_logger():
@@ -127,17 +138,12 @@ def setup_logger():
 
 
 if __name__ == '__main__':
-    # Setup logger
+    check_folders()
+
     setup_logger()
 
-    # Load credentials to log into discord
     credentials = load_credentials()
     logger.info("Loaded credentials from json")
-
-    # Initialize database
-    bot.database = Database()
-    logger.info("Database initialized")
-
 
     # Load extensions
     for extension in startup_extensions:
