@@ -7,9 +7,6 @@ import logging.handlers
 import json
 import sys
 
-
-from cogs.utils.database import Database
-
 description = "I am bot written by Sal. My purpose is to do dope sh*t."
 
 # Bot extensions
@@ -151,5 +148,6 @@ if __name__ == '__main__':
             logger.warn('Failed to load extension {}. {}: {}'.format(extension, type(e).__name__, e))
 
     logger.info("spooderBot now running!")
+
     bot.client_id = credentials['client_id']
     bot.run(credentials['token'])
