@@ -1,4 +1,5 @@
 from discord.ext import commands
+from __main__ import botConfig
 
 authorized_users = [
     "140350353521639424",  # Sal
@@ -8,7 +9,7 @@ authorized_users = [
 
 def checkIfOwner(message):
     """A helper function used by isOwner()."""
-    return message.author.id in authorized_users
+    return message.author.id == botConfig.owner
 
 
 def isOwner():
